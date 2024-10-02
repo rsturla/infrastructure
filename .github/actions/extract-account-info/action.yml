@@ -1,0 +1,51 @@
+name: Mask account info
+
+inputs:
+  accounts-file:
+    description: 'The path to the accounts.json file'
+    required: true
+    default: 'accounts.json'
+
+outputs:
+  accounts:
+    description: 'The accounts'
+    value: ${{ steps.extract-information.outputs.accounts }}
+  management-accounts:
+    description: 'The management accounts'
+    value: ${{ steps.extract-information.outputs.management-accounts }}
+  governance-accounts:
+    description: 'The governance accounts'
+    value: ${{ steps.extract-information.outputs.governance-accounts }}
+  workload-accounts:
+    description: 'The workload accounts'
+    value: ${{ steps.extract-information.outputs.workload-accounts }}
+  sandbox-accounts:
+    description: 'The sandbox accounts'
+    value: ${{ steps.extract-information.outputs.sandbox-accounts }}
+
+runs:
+  using: composite
+  steps:
+    - name: Mask Accounts
+      run: |
+        ACCOUNT_IDS=$(jq -c -r '.accounts | to_entries[] | .value.id' ${{ inputs.accounts-file }})
+        ACCOUNT_EMAILS=$(jq -c -r '.accounts | to_entries[] | .value.email' ${{ inputs.accounts-file }})
+
+        for value in $ACCOUNT_IDS $ACCOUNT_EMAILS; do
+          echo "::add-mask::$value"
+        done
+
+    - name: Extract Account Info
+      id: extract-information
+      run: |
+        ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        GOVERNANCE_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "governance")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        WORKLOAD_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "workload")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+
+        echo "accounts=$ACCOUNTS" >> $GITHUB_OUTPUT
+        echo "management-accounts=$MANAGEMENT_ACCOUNTS" >> $GITHUB_OUTPUT
+        echo "governance-accounts=$GOVERNANCE_ACCOUNTS" >> $GITHUB_OUTPUT
+        echo "workload-accounts=$WORKLOAD_ACCOUNTS" >> $GITHUB_OUTPUT
+        echo "sandbox-accounts=$SANDBOX_ACCOUNTS" >> $GITHUB_OUTPUT

@@ -1,0 +1,81 @@
+name: Infrastructure
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      accounts: ${{ steps.generate-matrixes.outputs.accounts }}
+      management_accounts: ${{ steps.generate-matrixes.outputs.management_accounts }}
+      governance_accounts: ${{ steps.generate-matrixes.outputs.governance_accounts }}
+      workload_accounts: ${{ steps.generate-matrixes.outputs.workload_accounts }}
+      sandbox_accounts: ${{ steps.generate-matrixes.outputs.sandbox_accounts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Info
+        id: extract-information
+        uses: ./.github/actions/extract-account-info
+        with:
+          accounts-file: 'accounts.json'
+
+      - name: Generate Matrixes
+        id: generate-matrixes
+        env:
+          ACCOUNTS: ${{ steps.extract-information.outputs.accounts }}
+          MANAGEMENT_ACCOUNTS: ${{ steps.extract-information.outputs.management-accounts }}
+          GOVERNANCE_ACCOUNTS: ${{ steps.extract-information.outputs.governance-accounts }}
+          WORKLOAD_ACCOUNTS: ${{ steps.extract-information.outputs.workload-accounts }}
+          SANDBOX_ACCOUNTS: ${{ steps.extract-information.outputs.sandbox-accounts }}
+        run: |
+          # Create a string that looks like this: management_accounts=["account1", "account2"]
+          ACCOUNTS_STRING=$(echo $ACCOUNTS | jq -Rc 'split(" ")')
+          MANAGEMENT_ACCOUNTS_STRING=$(echo $MANAGEMENT_ACCOUNTS | jq -Rc 'split(" ")')
+          GOVERNANCE_ACCOUNTS_STRING=$(echo $GOVERNANCE_ACCOUNTS | jq -Rc 'split(" ")')
+          WORKLOAD_ACCOUNTS_STRING=$(echo $WORKLOAD_ACCOUNTS | jq -Rc 'split(" ")')
+          SANDBOX_ACCOUNTS_STRING=$(echo $SANDBOX_ACCOUNTS | jq -Rc 'split(" ")')
+
+          echo "accounts=$ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "management_accounts=$MANAGEMENT_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "governance_accounts=$GOVERNANCE_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "workload_accounts=$WORKLOAD_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "sandbox_accounts=$SANDBOX_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+
+  plan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.management_accounts) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Info
+        id: extract-information
+        uses: ./.github/actions/extract-account-info
+        with:
+          accounts-file: 'accounts.json'
+
+      - name: Install Dependencies
+        env:
+          TERRAGRUNT_VERSION: 0.67.9
+          OPENTOFU_VERSION: 1.8.2
+        run: |
+          sudo mkdir -p /usr/local/bin
+          curl -sSfL -o /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64
+          sudo install -c -m 0755 /tmp/terragrunt /usr/local/bin
+
+          curl -sSfL -o /tmp/opentofu.tar.gz https://github.com/opentofu/opentofu/releases/download/v1.8.2/tofu_1.8.2_linux_amd64.tar.gz
+          tar -xzf /tmp/opentofu.tar.gz -C /tmp
+          sudo install -c -m 0755 /tmp/tofu /usr/local/bin
+
+      - name: Check Formatting
+        working-directory: ${{ steps.extract-information.outputs.account }}
+        run: |
+          terragrunt hclfmt --teragrunt-check

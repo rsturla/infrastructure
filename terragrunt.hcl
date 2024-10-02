@@ -74,5 +74,5 @@ remote_state {
 }
 
 inputs = {
-  aws_region     = local.aws_region
+  aws_region = local.aws_region
 }

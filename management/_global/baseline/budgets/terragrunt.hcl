@@ -9,7 +9,7 @@ include "root" {
 
 inputs = {
   sns_topic_name = "budgets"
-  notifications  = [
+  notifications = [
     {
       comparison_operator = "GREATER_THAN"
       threshold           = 80

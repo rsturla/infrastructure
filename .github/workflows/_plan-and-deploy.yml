@@ -145,6 +145,7 @@ jobs:
           name: ${{ inputs.account }}-tfplan
 
       - name: Display Plan
+        working-directory: ${{ inputs.account }}
         run: |
           terragrunt run-all show --terragrunt-no-auto-init --terragrunt-out-dir $(pwd)
 

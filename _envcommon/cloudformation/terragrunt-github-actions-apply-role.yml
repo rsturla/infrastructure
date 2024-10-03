@@ -24,7 +24,9 @@ Resources:
           - Effect: "Allow"
             Principal:
               AWS: !Sub "${ExternalAccountRoleArn}"
-            Action: "sts:AssumeRole"
+            Action:
+              - "sts:AssumeRole"
+              - "sts:TagSession"
       Path: "/"
       Policies:
         - PolicyName: "TerragruntApplyRuntimePolicy"

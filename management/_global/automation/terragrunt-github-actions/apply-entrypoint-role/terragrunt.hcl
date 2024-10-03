@@ -27,7 +27,10 @@ inputs = {
   policy_statements = {
     AssumeTerragruntApplyRole = {
       effect    = "Allow"
-      actions   = ["sts:AssumeRole"]
+      actions   = [
+        "sts:AssumeRole",
+        "sts:TagSession",
+      ]
       resources = [
         for account in local.accounts : "arn:aws:iam::${local.account_ids[local.account_name]}:role/${local.repository}-terragrunt-apply-role"
       ]

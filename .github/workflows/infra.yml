@@ -28,35 +28,19 @@ jobs:
         run: |
           terragrunt hclfmt --teragrunt-check
 
-  plan:
+  plan-and-deploy:
+    uses: ./.github/workflows/_plan-and-deploy.yml
+    secrets: inherit
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/_plan-and-deploy.yml
-    secrets: inherit
     strategy:
       matrix:
         account: ["management"]
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      is_deploy: false
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2
-
-  deploy:
-    permissions:
-      id-token: write
-      contents: read
-    uses: ./.github/workflows/_plan-and-deploy.yml
-    secrets: inherit
-    needs: [check, plan]
-    strategy:
-      matrix:
-        account: ["management"]
-    with:
-      accounts-file: ./_private/accounts.json
-      account: ${{ matrix.account }}
-      is_deploy: true
+      # is_deploy: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+      is_deploy: ${{ github.event_name == 'pull_request' }}
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2

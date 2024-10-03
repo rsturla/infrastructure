@@ -71,7 +71,7 @@ jobs:
           echo "sandbox_accounts=$SANDBOX_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
 
   plan:
-    uses: ./.github/workflows/_plan-and-deploy.yml
+    uses: ./.github/workflows/_plan.yml
     secrets: inherit
     needs: prepare
     permissions:
@@ -83,12 +83,11 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      is_deploy: false
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2
 
   deploy:
-    uses: ./.github/workflows/_plan-and-deploy.yml
+    uses: ./.github/workflows/_deploy.yml
     # if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan]
@@ -101,6 +100,5 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      is_deploy: true
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2

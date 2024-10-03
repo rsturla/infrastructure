@@ -40,11 +40,11 @@ runs:
       id: extract-information
       shell: bash
       run: |
-        ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        GOVERNANCE_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "governance")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        WORKLOAD_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "workload")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        GOVERNANCE_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "governance")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        WORKLOAD_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "workload")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
 
         echo "accounts=$ACCOUNTS" >> $GITHUB_OUTPUT
         echo "management-accounts=$MANAGEMENT_ACCOUNTS" >> $GITHUB_OUTPUT

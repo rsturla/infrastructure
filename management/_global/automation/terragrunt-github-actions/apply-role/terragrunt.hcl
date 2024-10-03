@@ -1,5 +1,5 @@
 terraform {
-  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/misc/cloudformation-stack?ref=github-actions-module-outputs"
+  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/misc/cloudformation-stack?ref=main"
 }
 
 include "root" {

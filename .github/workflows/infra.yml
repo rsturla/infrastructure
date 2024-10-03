@@ -8,7 +8,6 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
@@ -79,7 +78,7 @@ jobs:
 
   deploy-management:
     uses: ./.github/workflows/_deploy.yml
-    # if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     secrets: inherit
     needs: [prepare, plan]
     permissions:
@@ -92,47 +91,47 @@ jobs:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
 
-  deploy-governance:
-    uses: ./.github/workflows/_deploy.yml
-    # if: github.event_name != 'pull_request'
-    secrets: inherit
-    needs: [prepare, plan, deploy-management]
-    permissions:
-      id-token: write
-      contents: read
-    strategy:
-      matrix:
-        account: ${{ fromJson(needs.prepare.outputs.governance_accounts) }}
-    with:
-      accounts-file: ./_private/accounts.json
-      account: ${{ matrix.account }}
+  # deploy-governance:
+  #   uses: ./.github/workflows/_deploy.yml
+  #   if: github.event_name != 'pull_request'
+  #   secrets: inherit
+  #   needs: [prepare, plan, deploy-management]
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   strategy:
+  #     matrix:
+  #       account: ${{ fromJson(needs.prepare.outputs.governance_accounts) }}
+  #   with:
+  #     accounts-file: ./_private/accounts.json
+  #     account: ${{ matrix.account }}
 
-  deploy-workload:
-    uses: ./.github/workflows/_deploy.yml
-    # if: github.event_name != 'pull_request'
-    secrets: inherit
-    needs: [prepare, plan, deploy-management, deploy-governance]
-    permissions:
-      id-token: write
-      contents: read
-    strategy:
-      matrix:
-        account: ${{ fromJson(needs.prepare.outputs.workload_accounts) }}
-    with:
-      accounts-file: ./_private/accounts.json
-      account: ${{ matrix.account }}
+  # deploy-workload:
+  #   uses: ./.github/workflows/_deploy.yml
+  #   if: github.event_name != 'pull_request'
+  #   secrets: inherit
+  #   needs: [prepare, plan, deploy-management, deploy-governance]
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   strategy:
+  #     matrix:
+  #       account: ${{ fromJson(needs.prepare.outputs.workload_accounts) }}
+  #   with:
+  #     accounts-file: ./_private/accounts.json
+  #     account: ${{ matrix.account }}
 
-  deploy-sandbox:
-    uses: ./.github/workflows/_deploy.yml
-    # if: github.event_name != 'pull_request'
-    secrets: inherit
-    needs: [prepare, plan, deploy-management, deploy-governance]
-    permissions:
-      id-token: write
-      contents: read
-    strategy:
-      matrix:
-        account: ${{ fromJson(needs.prepare.outputs.sandbox_accounts) }}
-    with:
-      accounts-file: ./_private/accounts.json
-      account: ${{ matrix.account }}
+  # deploy-sandbox:
+  #   uses: ./.github/workflows/_deploy.yml
+  #   if: github.event_name != 'pull_request'
+  #   secrets: inherit
+  #   needs: [prepare, plan, deploy-management, deploy-governance]
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   strategy:
+  #     matrix:
+  #       account: ${{ fromJson(needs.prepare.outputs.sandbox_accounts) }}
+  #   with:
+  #     accounts-file: ./_private/accounts.json
+  #     account: ${{ matrix.account }}

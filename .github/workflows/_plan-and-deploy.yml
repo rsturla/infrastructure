@@ -74,7 +74,7 @@ jobs:
       - name: Plan
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all plan -concise
+          terragrunt run-all plan -concise -lock=false
 
   deploy:
     runs-on: ubuntu-latest

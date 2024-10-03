@@ -94,7 +94,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    if: false
     environment: deploy
     needs: plan
     permissions:

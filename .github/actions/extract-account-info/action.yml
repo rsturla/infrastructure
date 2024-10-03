@@ -5,6 +5,10 @@ inputs:
     description: 'The path to the accounts.json file'
     required: true
     default: 'accounts.json'
+  account-name:
+    description: 'The name of the account to extract information for'
+    required: false
+    type: string
 
 outputs:
   accounts:
@@ -22,11 +26,15 @@ outputs:
   sandbox-accounts:
     description: 'The sandbox accounts'
     value: ${{ steps.extract-information.outputs.sandbox-accounts }}
+  account-id:
+    description: 'The account ID'
+    value: ${{ steps.extract-information.outputs.account-id }}
 
 runs:
   using: composite
   steps:
     - name: Mask Accounts
+      shell: bash
       run: |
         ACCOUNT_IDS=$(jq -c -r '.accounts | to_entries[] | .value.id' ${{ inputs.accounts-file }})
         ACCOUNT_EMAILS=$(jq -c -r '.accounts | to_entries[] | .value.email' ${{ inputs.accounts-file }})
@@ -37,15 +45,24 @@ runs:
 
     - name: Extract Account Info
       id: extract-information
+      shell: bash
+      env:
+        ACCOUNT_NAME: ${{ inputs.account-name }}
       run: |
-        ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        GOVERNANCE_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "governance")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        WORKLOAD_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "workload")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
-        SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
+        ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        GOVERNANCE_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "governance")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        WORKLOAD_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "workload")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+        SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
+
+        ACCOUNT_ID=""
+        if [ -n "$ACCOUNT_NAME" ]; then
+          ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" ${{ inputs.accounts-file }})
+        fi
 
         echo "accounts=$ACCOUNTS" >> $GITHUB_OUTPUT
         echo "management-accounts=$MANAGEMENT_ACCOUNTS" >> $GITHUB_OUTPUT
         echo "governance-accounts=$GOVERNANCE_ACCOUNTS" >> $GITHUB_OUTPUT
         echo "workload-accounts=$WORKLOAD_ACCOUNTS" >> $GITHUB_OUTPUT
         echo "sandbox-accounts=$SANDBOX_ACCOUNTS" >> $GITHUB_OUTPUT
+        echo "account-id=$ACCOUNT_ID" >> $GITHUB_OUTPUT

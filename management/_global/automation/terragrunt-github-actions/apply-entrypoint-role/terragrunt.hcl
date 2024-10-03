@@ -12,7 +12,7 @@ locals {
   accounts    = local.common_vars.locals.accounts
 
   account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
-  account_ids = local.common_vars.locals.account_ids
+  account_ids  = local.common_vars.locals.account_ids
   account_name = local.account_vars.locals.account_name
 
   repository = local.common_vars.locals.repository
@@ -26,8 +26,8 @@ inputs = {
 
   policy_statements = {
     AssumeTerragruntApplyRole = {
-      effect    = "Allow"
-      actions   = [
+      effect = "Allow"
+      actions = [
         "sts:AssumeRole",
         "sts:TagSession",
       ]

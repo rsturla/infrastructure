@@ -15,7 +15,7 @@ locals {
   accounts    = local.common_vars.locals.accounts
   account_ids = local.common_vars.locals.account_ids
 
-  state_region = local.common_vars.locals.state_region
+  state_region        = local.common_vars.locals.state_region
   state_bucket_suffix = "-${replace(local.state_region, "-", "")}-rsturla"
 }
 
@@ -25,7 +25,7 @@ inputs = {
   capabilities  = ["CAPABILITY_NAMED_IAM"]
 
   parameters = {
-    ExternalAccountRoleArn = "arn:aws:iam::${local.account_ids["management"]}:role/terragrunt-apply-entrypoint-role"
+    ExternalAccountRoleArn          = "arn:aws:iam::${local.account_ids["management"]}:role/terragrunt-apply-entrypoint-role"
     TerragruntRemoteStateBucketName = "tfstate-*${local.state_bucket_suffix}"
   }
 

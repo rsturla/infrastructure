@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-env:
-  TERRAGRUNT_VERSION: 0.67.9
-  OPENTOFU_VERSION: 1.8.2
-
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -19,9 +15,6 @@ jobs:
 
       - name: Install Dependencies
         uses: ./.github/actions/setup-terragrunt
-        with:
-          terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
-          opentofu-version: ${{ env.OPENTOFU_VERSION }}
 
       - name: Check Formatting
         working-directory: ${{ steps.extract-information.outputs.account }}
@@ -86,9 +79,9 @@ jobs:
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2
 
-  deploy:
+  deploy-management:
     uses: ./.github/workflows/_deploy.yml
-    # if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan]
     permissions:
@@ -96,7 +89,58 @@ jobs:
       contents: read
     strategy:
       matrix:
-        account: ${{ fromJson(needs.prepare.outputs.accounts) }}
+        account: ${{ fromJson(needs.prepare.outputs.management_accounts) }}
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2
+
+  deploy-governance:
+    uses: ./.github/workflows/_deploy.yml
+    if: github.event_name != 'pull_request'
+    secrets: inherit
+    needs: [prepare, plan, deploy-management]
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.governance_accounts) }}
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2
+
+  deploy-workload:
+    uses: ./.github/workflows/_deploy.yml
+    if: github.event_name != 'pull_request'
+    secrets: inherit
+    needs: [prepare, plan, deploy-management, deploy-governance]
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.workload_accounts) }}
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2
+
+  deploy-sandbox:
+    uses: ./.github/workflows/_deploy.yml
+    if: github.event_name != 'pull_request'
+    secrets: inherit
+    needs: [prepare, plan, deploy-management, deploy-governance]
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.sandbox_accounts) }}
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}

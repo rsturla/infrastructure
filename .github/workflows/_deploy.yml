@@ -12,16 +12,6 @@ on:
         description: 'Account to deploy to'
         required: true
         type: string
-      terragrunt-version:
-        description: 'Terragrunt version to use'
-        required: true
-        default: '0.67.9'
-        type: string
-      opentofu-version:
-        description: 'Opentofu version to use'
-        required: true
-        default: '1.8.2'
-        type: string
 
 jobs:
   deploy:
@@ -41,13 +31,11 @@ jobs:
         uses: ./.github/actions/extract-account-info
         with:
           accounts-file: ${{ inputs.accounts-file }}
-          account: ${{ inputs.account }}
+          account-name: ${{ inputs.account }}
 
       - name: Install Dependencies
         uses: ./.github/actions/setup-terragrunt
         with:
-          terragrunt-version: ${{ inputs.terragrunt-version }}
-          opentofu-version: ${{ inputs.opentofu-version }}
           ssh-private-key: ${{ secrets.TERRAFORM_MODULES_PRIVATE_KEY }}
 
       - name: Configure AWS Credentials
@@ -57,13 +45,20 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
 
-      # - name: Assume Role
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-region: ${{ vars.AWS_REGION }}
-      #     role-to-assume: ${{ steps.extract-information.outputs.account }}
-      #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
-      #     role-chaining: true
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ENTRYPOINT_ROLE_ARN }}
+          role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+
+      - name: Assume Role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ steps.extract-information.outputs.account-id }}:role/${{ vars.AWS_DEPLOY_ROLE_NAME }}
+          role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+          role-chaining: true
 
       - name: Init
         working-directory: ${{ inputs.account }}

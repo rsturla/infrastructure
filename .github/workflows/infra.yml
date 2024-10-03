@@ -91,7 +91,7 @@ jobs:
     uses: ./.github/workflows/_plan-and-deploy.yml
     # if: github.event_name != 'pull_request'
     secrets: inherit
-    needs: prepare
+    needs: [prepare, plan]
     permissions:
       id-token: write
       contents: read

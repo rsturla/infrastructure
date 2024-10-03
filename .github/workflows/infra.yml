@@ -30,6 +30,7 @@ jobs:
 
   plan:
     runs-on: ubuntu-latest
+    environment: plan
     permissions:
       id-token: write
       contents: read

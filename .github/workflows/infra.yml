@@ -40,6 +40,6 @@ jobs:
     uses: ./.github/workflows/_plan-and-deploy.yml
     with:
       account: ${{ matrix.account }}
-      is_deploy: 'false'
+      is_deploy: false
       terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
       opentofu-version: ${{ env.OPENTOFU_VERSION }}

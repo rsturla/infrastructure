@@ -7,21 +7,26 @@ on:
         description: 'Path to the accounts file'
         required: true
         default: './accounts.json'
+        type: string
       account:
         description: 'Account to deploy to'
         required: true
+        type: string
       is_deploy:
         description: 'Whether to deploy or not'
         required: true
         default: false
+        type: boolean
       terragrunt-version:
         description: 'Terragrunt version to use'
         required: true
         default: '0.67.9'
+        type: string
       opentofu-version:
         description: 'Opentofu version to use'
         required: true
         default: '1.8.2'
+        type: string
 
 jobs:
   plan:

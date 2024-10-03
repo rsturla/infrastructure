@@ -78,12 +78,12 @@ jobs:
       - name: Validate
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all validate
+          terragrunt run-all validate --terragrunt-no-auto-init
 
       - name: Plan
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all plan -concise -lock=false --terragrunt-out-dir $(pwd)
+          terragrunt run-all plan -concise -lock=false --terragrunt-no-auto-init --terragrunt-out-dir $(pwd)
 
       - name: Upload Plan
         uses: actions/upload-artifact@v4
@@ -147,4 +147,4 @@ jobs:
       - name: Apply
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all apply tfplan.tfplan --terragrunt-out-dir $(pwd) --terragrunt-non-interactive
+          terragrunt run-all apply --terragrunt-no-auto-init --terragrunt-out-dir $(pwd) --terragrunt-non-interactive

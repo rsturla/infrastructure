@@ -21,7 +21,7 @@ locals {
 inputs = {
   name        = "terragrunt-plan-entrypoint-role"
   repository  = local.repository
-  git_pattern = "environment:deploy"
+  git_pattern = "environment:plan"
 
   policy_statements = {
     AssumeTerragruntPlanRole = {

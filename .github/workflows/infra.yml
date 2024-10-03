@@ -40,7 +40,6 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      # is_deploy: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
       is_deploy: ${{ github.event_name == 'pull_request' }}
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2

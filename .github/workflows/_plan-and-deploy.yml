@@ -31,7 +31,6 @@ on:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    if: ${{ inputs.is_deploy == false }}
     environment: plan
     permissions:
       id-token: write
@@ -81,11 +80,18 @@ jobs:
         run: |
           terragrunt run-all show tfplan
 
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.account }}-tfplan
+          path: |
+            **/tfplan
+
   deploy:
     runs-on: ubuntu-latest
+    if: false
     environment: deploy
     needs: plan
-    if: ${{ inputs.is_deploy == true }}
     permissions:
       id-token: write
       contents: read
@@ -123,10 +129,10 @@ jobs:
       #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
       #     role-chaining: true
 
-      - name: Plan
-        working-directory: ${{ inputs.account }}
-        run: |
-          terragrunt run-all plan -concise -lock=false -out=tfplan
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.account }}-tfplan
 
       - name: Apply
         working-directory: ${{ inputs.account }}

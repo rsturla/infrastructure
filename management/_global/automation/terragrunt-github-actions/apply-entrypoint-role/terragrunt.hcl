@@ -1,5 +1,5 @@
 terraform {
-  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/identity/github-actions-role?ref=github-actions-module-outputs"
+  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/identity/github-actions-role?ref=main"
 }
 
 # Include the root `terragrunt.hcl` configuration, which has settings common across all environments & components.

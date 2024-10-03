@@ -76,8 +76,6 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2
 
   deploy-management:
     uses: ./.github/workflows/_deploy.yml
@@ -93,8 +91,6 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2
 
   deploy-governance:
     uses: ./.github/workflows/_deploy.yml
@@ -110,8 +106,6 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2
 
   deploy-workload:
     uses: ./.github/workflows/_deploy.yml
@@ -127,8 +121,6 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2
 
   deploy-sandbox:
     uses: ./.github/workflows/_deploy.yml
@@ -144,5 +136,3 @@ jobs:
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      terragrunt-version: 0.67.9
-      opentofu-version: 1.8.2

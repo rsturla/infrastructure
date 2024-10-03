@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template to create the IAM role for cross-account Terragrunt apply operations
+
+Parameters:
+  ExternalAccountRoleArn:
+    Description: "The ARN of the IAM Role in the external account that will be allowed to assume this IAM Role."
+    Type: String
+  TerragruntRemoteStateBucketName:
+    Description: "The name of the S3 bucket where the Terragrunt remote state is stored."
+    Type: String
+  TerragruntStateLockTableName:
+    Description: "The name of the DynamoDB table where the Terragrunt state lock is stored."
+    Type: String
+    Default: "terraform-locks"
+
+Resources:
+  TerragruntApplyRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "terragrunt-apply-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS: !Sub "${ExternalAccountRoleArn}"
+            Action:
+              - "sts:AssumeRole"
+              - "sts:TagSession"
+      Path: "/"
+      Policies:
+        - PolicyName: "TerragruntApplyRuntimePolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "AllowS3StateAccess"
+                Effect: "Allow"
+                Action:
+                  - "s3:*"
+                Resource:
+                  - !Sub "arn:aws:s3:::${TerragruntRemoteStateBucketName}"
+                  - !Sub "arn:aws:s3:::${TerragruntRemoteStateBucketName}/*"
+              - Sid: "AllowDynamoDBLockAccess"
+                Effect: "Allow"
+                Action:
+                  - "dynamodb:*"
+                Resource:
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TerragruntStateLockTableName}"
+        - PolicyName: "TerragruntDeployPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "AllowAccountManagementAccess"
+                Effect: "Allow"
+                Action:
+                  - "organizations:*"
+                  - "servicequotas:*"
+                  - "cloudformation:*"
+                  - "resource-explorer-2:*"
+                  - "budgets:*"
+                Resource: "*"
+              - Sid: "AllowDataStoreAccess"
+                Effect: "Allow"
+                Action:
+                  - "s3:*"
+                  - "rds:*"
+                  - "dynamodb:*"
+                  - "elasticache:*"
+                  - "elasticfilesystem:*"
+                  - "es:*"
+                  - "dlm:*"
+                  - "ecr:*"
+                  - "backup:*"
+                  - "backup-storage:*"
+                  - "glue:*"
+                Resource: "*"
+              - Sid: "AllowComputeAccess"
+                Effect: "Allow"
+                Action:
+                  - "ec2:*"
+                  - "ecs:*"
+                  - "eks:*"
+                  - "lambda:*"
+                  - "elasticloadbalancing:*"
+                  - "autoscaling:*"
+                  - "application-autoscaling:*"
+                  - "ssm:*"
+                  - "scheduler:*"
+                Resource: "*"
+              - Sid: "AllowObservabilityAccess"
+                Effect: "Allow"
+                Action:
+                  - "cloudwatch:*"
+                  - "xray:*"
+                  - "events:*"
+                  - "logs:*"
+                  - "grafana:*"
+                  - "athena:*"
+                Resource: "*"
+              - Sid: "AllowSecurityAccess"
+                Effect: "Allow"
+                Action:
+                  - "securityhub:*"
+                  - "macie2:*"
+                  - "cloudtrail:*"
+                  - "guardduty:*"
+                  - "config:*"
+                  - "inspector2:*"
+                  - "cognito-idp:*"
+                  - "iam:*"
+                  - "kms:*"
+                  - "access-analyzer:*"
+                  - "sso:*"
+                  - "identitystore:*"
+                Resource: "*"
+              - Sid: "AllowNetworkingAccess"
+                Effect: "Allow"
+                Action:
+                  - "route53:*"
+                  - "route53resolver:*"
+                  - "route53domains:*"
+                  - "apigateway:*"
+                  - "cloudfront:*"
+                  - "acm:*"
+                  - "waf:*"
+                  - "servicediscovery:*"
+                Resource: "*"
+              - Sid: "AllowMessagingAccess"
+                Effect: "Allow"
+                Action:
+                  - "sqs:*"
+                  - "sns:*"
+                  - "ses:*"
+                  - "kafka:*"
+                  - "kafka-cluster:*"
+                  - "kafkaconnect:*"
+                Resource: "*"
+
+Outputs:
+  IAMRoleArn:
+    Description: "ARN of the IAM Role created"
+    Value: !GetAtt TerragruntApplyRole.Arn

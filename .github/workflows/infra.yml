@@ -29,15 +29,14 @@ jobs:
           terragrunt hclfmt --teragrunt-check
 
   plan:
-    runs-on: ubuntu-latest
-    environment: plan
     permissions:
       id-token: write
       contents: read
+    uses: ./.github/workflows/_plan-and-deploy.yml
+    secrets: inherit
     strategy:
       matrix:
         account: ["management"]
-    uses: ./.github/workflows/_plan-and-deploy.yml
     with:
       account: ${{ matrix.account }}
       is_deploy: false

@@ -26,6 +26,7 @@ on:
 jobs:
   plan:
     runs-on: ubuntu-latest
+    if: ${{ inputs.is_deploy == false }}
     environment: plan
     permissions:
       id-token: write

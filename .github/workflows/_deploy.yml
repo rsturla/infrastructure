@@ -58,14 +58,17 @@ jobs:
         working-directory: ${{ inputs.account }}
         run: terragrunt run-all init
 
-      - name: Download Plan
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.account }}-tfplan
+      # The uploaded artifact leaks account information, so it is disabled since this repo is public.
+      # Typically, you would upload the plan artifact to the GitHub Actions workflow run so it can be downloaded
+      # in the deploy job.
+      # - name: Download Plan
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: ${{ inputs.account }}-tfplan
 
-      - name: Display Plan
+      - name: Plan
         working-directory: ${{ inputs.account }}
-        run: terragrunt run-all show --terragrunt-out-dir $(pwd)
+        run: terragrunt run-all plan -concise -lock=false --terragrunt-no-auto-init --terragrunt-out-dir $(pwd)
 
       - name: Apply
         working-directory: ${{ inputs.account }}

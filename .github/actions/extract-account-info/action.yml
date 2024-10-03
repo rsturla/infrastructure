@@ -56,10 +56,8 @@ runs:
         SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
 
         ACCOUNT_ID=""
-        echo "Extracting account info for $ACCOUNT_NAME"
         if [ -n "$ACCOUNT_NAME" ]; then
           ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" ${{ inputs.accounts-file }})
-          echo "Extracted account ID: $ACCOUNT_ID"
         fi
 
         echo "accounts=$ACCOUNTS" >> $GITHUB_OUTPUT

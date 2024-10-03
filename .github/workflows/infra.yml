@@ -43,3 +43,20 @@ jobs:
       is_deploy: false
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2
+
+  deploy:
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/_plan-and-deploy.yml
+    secrets: inherit
+    needs: [check, plan]
+    strategy:
+      matrix:
+        account: ["management"]
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
+      is_deploy: true
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2

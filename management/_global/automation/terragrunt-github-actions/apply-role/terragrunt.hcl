@@ -17,7 +17,7 @@ locals {
 inputs = {
   name        = "terragrunt-apply-role"
   repository  = local.repository
-  git_pattern = "refs/heads/main"
+  git_pattern = "environment:deploy"
 
   create_openid_connect_provider = true
 

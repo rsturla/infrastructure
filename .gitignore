@@ -6,6 +6,7 @@
 *.tfstate
 *.tfstate.backup
 .terraform.lock.hcl
+tfplan
 
 # IDEs
 .idea

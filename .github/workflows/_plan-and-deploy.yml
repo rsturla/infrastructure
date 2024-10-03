@@ -76,7 +76,7 @@ jobs:
         run: |
           terragrunt run-all plan -concise -lock=false -out=tfplan
 
-      - name: Display Plans
+      - name: Display Plan
         working-directory: ${{ inputs.account }}
         run: |
           terragrunt run-all show tfplan
@@ -122,7 +122,12 @@ jobs:
       #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
       #     role-chaining: true
 
-      # - name: Deploy
-      #   working-directory: ${{ inputs.account }}
-      #   run: |
-      #     terragrunt run-all apply -auto-approve
+      - name: Plan
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all plan -concise -lock=false -out=tfplan
+
+      - name: Apply
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all apply -auto-approve tfplan

@@ -1,0 +1,70 @@
+name: Plan and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      accounts-file:
+        description: 'Path to the accounts file'
+        required: true
+        default: './accounts.json'
+      account:
+        description: 'Account to deploy to'
+        required: true
+      is_deploy:
+        description: 'Whether to deploy or not'
+        required: true
+        default: 'false'
+      terragrunt-version:
+        description: 'Terragrunt version to use'
+        required: true
+        default: '0.67.9'
+      opentofu-version:
+        description: 'Opentofu version to use'
+        required: true
+        default: '1.8.2'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment: plan
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        with:
+          token: ${{ secrets.INFRASTRUCTURE_PRIVATE_PAT }}
+          submodules: 'true'
+
+      - name: Extract Account Info
+        uses: ./.github/actions/extract-account-info
+        with:
+          accounts-file: ${{ github.event.inputs.accounts-file }}
+          account: ${{ github.event.inputs.account }}
+
+      - name: Install Dependencies
+        uses: ./.github/actions/setup-terragrunt
+        with:
+          terragrunt-version: ${{ github.event.inputs.terragrunt-version }}
+          opentofu-version: ${{ github.event.inputs.opentofu-version }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
+          role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+
+      # - name: Assume Role
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-region: ${{ vars.AWS_REGION }}
+      #     role-to-assume: ${{ steps.extract-information.outputs.account }}
+      #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+      #     role-chaining: true
+
+      - name: Plan
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all plan -concise

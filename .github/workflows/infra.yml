@@ -34,27 +34,12 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-        with:
-          token: ${{ secrets.INFRASTRUCTURE_PRIVATE_PAT }}
-          submodules: 'true'
-
-      - name: Extract Account Info
-        uses: ./.github/actions/extract-account-info
-        with:
-          accounts-file: './_private/accounts.json'
-
-      - name: Install Dependencies
-        uses: ./.github/actions/setup-terragrunt
-        with:
-          terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
-          opentofu-version: ${{ env.OPENTOFU_VERSION }}
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_PLAN_ROLE_ARN }}
-          role-session-name: ${{ github.actor }}-${{ github.run_id }}
+    strategy:
+      matrix:
+        account: ["management"]
+    uses: ./.github/workflows/_plan-and-deploy.yml
+    with:
+      account: ${{ matrix.account }}
+      is_deploy: 'false'
+      terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
+      opentofu-version: ${{ env.OPENTOFU_VERSION }}

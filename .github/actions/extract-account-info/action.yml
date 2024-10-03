@@ -27,6 +27,7 @@ runs:
   using: composite
   steps:
     - name: Mask Accounts
+      shell: bash
       run: |
         ACCOUNT_IDS=$(jq -c -r '.accounts | to_entries[] | .value.id' ${{ inputs.accounts-file }})
         ACCOUNT_EMAILS=$(jq -c -r '.accounts | to_entries[] | .value.email' ${{ inputs.accounts-file }})
@@ -37,6 +38,7 @@ runs:
 
     - name: Extract Account Info
       id: extract-information
+      shell: bash
       run: |
         ACCOUNTS=$(jq -cr '.accounts | to_entries | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)
         MANAGEMENT_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "management")) | sort_by(.value.order // 999) | map(.key) | join(" ")' accounts.json)

@@ -17,6 +17,7 @@ runs:
       env:
         TERRAGRUNT_VERSION: ${{ inputs.terragrunt-version }}
         OPENTOFU_VERSION: ${{ inputs.opentofu-version }}
+      shell: bash
       run: |
         sudo mkdir -p /usr/local/bin
         curl -sSfL -o /tmp/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64

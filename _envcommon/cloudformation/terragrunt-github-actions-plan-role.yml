@@ -63,6 +63,8 @@ Resources:
                   - "cloudformation:Describe*"
                   - "resource-explorer-2:Get*"
                   - "resource-explorer-2:List*"
+                  - "budgets:Get*"
+                  - "budgets:List*"
                   - "budgets:View*"
                 Resource:
                   - "*"

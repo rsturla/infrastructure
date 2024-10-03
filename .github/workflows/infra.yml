@@ -79,7 +79,7 @@ jobs:
 
   deploy-management:
     uses: ./.github/workflows/_deploy.yml
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan]
     permissions:
@@ -94,7 +94,7 @@ jobs:
 
   deploy-governance:
     uses: ./.github/workflows/_deploy.yml
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan, deploy-management]
     permissions:
@@ -109,7 +109,7 @@ jobs:
 
   deploy-workload:
     uses: ./.github/workflows/_deploy.yml
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan, deploy-management, deploy-governance]
     permissions:
@@ -124,7 +124,7 @@ jobs:
 
   deploy-sandbox:
     uses: ./.github/workflows/_deploy.yml
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     secrets: inherit
     needs: [prepare, plan, deploy-management, deploy-governance]
     permissions:

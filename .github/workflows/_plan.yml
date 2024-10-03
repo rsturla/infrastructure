@@ -44,14 +44,14 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_PLAN_ENTRYPOINT_ROLE_ARN }}
-          role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+          role-session-name: ${{ inputs.account }}-${{ github.run_id }}
 
       - name: Assume Role
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ steps.extract-information.outputs.account-id }}:role/${{ vars.AWS_PLAN_ROLE_NAME }}
-          role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
+          role-session-name: ${{ inputs.account }}-${{ github.run_id }}
           role-chaining: true
 
       - name: Init

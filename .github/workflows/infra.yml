@@ -40,5 +40,5 @@ jobs:
     with:
       account: ${{ matrix.account }}
       is_deploy: false
-      terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
-      opentofu-version: ${{ env.OPENTOFU_VERSION }}
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2

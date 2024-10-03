@@ -70,10 +70,15 @@ jobs:
       #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
       #     role-chaining: true
 
+      - name: Init
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all init
+
       - name: Plan
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all plan -concise -lock=false -out=tfplan
+          terragrunt run-all plan -concise -lock=false --terragrunt-out-dir $(pwd)
 
       - name: Display Plan
         working-directory: ${{ inputs.account }}
@@ -85,7 +90,7 @@ jobs:
         with:
           name: ${{ inputs.account }}-tfplan
           path: |
-            **/tfplan
+            **/tfplan.tfplan
 
   deploy:
     runs-on: ubuntu-latest
@@ -129,6 +134,11 @@ jobs:
       #     role-session-name: ${{ github.actor }}-${{ inputs.account }}-${{ github.run_id }}
       #     role-chaining: true
 
+      - name: Init
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all init
+
       - name: Download Plan Artifact
         uses: actions/download-artifact@v4
         with:
@@ -137,4 +147,4 @@ jobs:
       - name: Apply
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all apply -auto-approve tfplan
+          terragrunt run-all apply -auto-approve tfplan.tfplan --terragrunt-out-dir $(pwd)

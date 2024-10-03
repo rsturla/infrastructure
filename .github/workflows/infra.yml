@@ -38,6 +38,7 @@ jobs:
       matrix:
         account: ["management"]
     with:
+      accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
       is_deploy: false
       terragrunt-version: 0.67.9

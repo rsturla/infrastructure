@@ -83,7 +83,7 @@ jobs:
       - name: Display Plan
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all show tfplan
+          terragrunt run-all show tfplan.tfplan
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4

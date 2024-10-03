@@ -28,18 +28,79 @@ jobs:
         run: |
           terragrunt hclfmt --teragrunt-check
 
-  plan-and-deploy:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      accounts: ${{ steps.generate-matrixes.outputs.accounts }}
+      management_accounts: ${{ steps.generate-matrixes.outputs.management_accounts }}
+      governance_accounts: ${{ steps.generate-matrixes.outputs.governance_accounts }}
+      workload_accounts: ${{ steps.generate-matrixes.outputs.workload_accounts }}
+      sandbox_accounts: ${{ steps.generate-matrixes.outputs.sandbox_accounts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        with:
+          token: ${{ secrets.INFRASTRUCTURE_PRIVATE_PAT }}
+          submodules: 'true'
+
+      - name: Extract Info
+        id: extract-information
+        uses: ./.github/actions/extract-account-info
+        with:
+          accounts-file: ./_private/accounts.json
+
+      - name: Generate Matrixes
+        id: generate-matrixes
+        env:
+          ACCOUNTS: ${{ steps.extract-information.outputs.accounts }}
+          MANAGEMENT_ACCOUNTS: ${{ steps.extract-information.outputs.management-accounts }}
+          GOVERNANCE_ACCOUNTS: ${{ steps.extract-information.outputs.governance-accounts }}
+          WORKLOAD_ACCOUNTS: ${{ steps.extract-information.outputs.workload-accounts }}
+          SANDBOX_ACCOUNTS: ${{ steps.extract-information.outputs.sandbox-accounts }}
+        run: |
+          # Create a string that looks like this: management_accounts=["account1", "account2"]
+          ACCOUNTS_STRING=$(echo $ACCOUNTS | jq -Rc 'split(" ")')
+          MANAGEMENT_ACCOUNTS_STRING=$(echo $MANAGEMENT_ACCOUNTS | jq -Rc 'split(" ")')
+          GOVERNANCE_ACCOUNTS_STRING=$(echo $GOVERNANCE_ACCOUNTS | jq -Rc 'split(" ")')
+          WORKLOAD_ACCOUNTS_STRING=$(echo $WORKLOAD_ACCOUNTS | jq -Rc 'split(" ")')
+          SANDBOX_ACCOUNTS_STRING=$(echo $SANDBOX_ACCOUNTS | jq -Rc 'split(" ")')
+          echo "accounts=$ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "management_accounts=$MANAGEMENT_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "governance_accounts=$GOVERNANCE_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "workload_accounts=$WORKLOAD_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+          echo "sandbox_accounts=$SANDBOX_ACCOUNTS_STRING" >> $GITHUB_OUTPUT
+
+  plan:
     uses: ./.github/workflows/_plan-and-deploy.yml
     secrets: inherit
+    needs: prepare
     permissions:
       id-token: write
       contents: read
     strategy:
       matrix:
-        account: ["management"]
+        account: ${{ fromJson(needs.prepare.outputs.accounts) }}
     with:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
-      is_deploy: ${{ github.event_name == 'pull_request' }}
+      is_deploy: false
+      terragrunt-version: 0.67.9
+      opentofu-version: 1.8.2
+
+  deploy:
+    uses: ./.github/workflows/_plan-and-deploy.yml
+    # if: github.event_name != 'pull_request'
+    secrets: inherit
+    needs: prepare
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.accounts) }}
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
+      is_deploy: true
       terragrunt-version: 0.67.9
       opentofu-version: 1.8.2

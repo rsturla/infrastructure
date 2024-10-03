@@ -32,6 +32,7 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     environment: plan
+    if: ${{ inputs.is_deploy == false }}
     permissions:
       id-token: write
       contents: read
@@ -92,7 +93,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: deploy
-    needs: plan
+    if: ${{ inputs.is_deploy }}
     permissions:
       id-token: write
       contents: read

@@ -7,7 +7,7 @@ inputs:
     default: 'accounts.json'
   account-name:
     description: 'The name of the account to extract information for'
-    required: true
+    required: false
     type: string
 
 outputs:

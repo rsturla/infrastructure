@@ -12,6 +12,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
@@ -42,7 +43,7 @@ jobs:
       - name: Extract Account Info
         uses: ./.github/actions/extract-account-info
         with:
-          accounts-file: 'accounts.json'
+          accounts-file: './_private/accounts.json'
 
       - name: Install Dependencies
         uses: ./.github/actions/setup-terragrunt

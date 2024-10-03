@@ -9,6 +9,10 @@ inputs:
     description: 'The version of OpenTofu to install'
     required: true
     default: '1.8.2'
+  ssh-private-key:
+    description: 'The SSH private key to use for fetching Terragrunt modules'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -25,3 +29,14 @@ runs:
         curl -sSfL -o /tmp/opentofu.tar.gz https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERSION}/tofu_${OPENTOFU_VERSION}_linux_amd64.tar.gz
         tar -xzf /tmp/opentofu.tar.gz -C /tmp
         sudo install -c -m 0755 /tmp/tofu /usr/local/bin
+
+    - name: Configure SSH
+      if: ${{ inputs.ssh-private-key != '' }}
+      run: |
+        mkdir -p $HOME/.tmp/ssh
+        # Create SSH socket
+        ssh-agent -a $HOME/.tmp/ssh/agent.sock
+        # Add SSH private key to SSH agent
+        ssh-add <(echo "${{ inputs.ssh-private-key }}")
+        # Set SSH_AUTH_SOCK environment variable
+        echo "SSH_AUTH_SOCK=$HOME/.tmp/ssh/agent.sock" >> $GITHUB_ENV

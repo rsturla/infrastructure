@@ -40,14 +40,14 @@ jobs:
           ssh-private-key: ${{ secrets.TERRAFORM_MODULES_PRIVATE_KEY }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_DEPLOY_ENTRYPOINT_ROLE_ARN }}
           role-session-name: ${{ inputs.account }}-${{ github.run_id }}
 
       - name: Assume Role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ steps.extract-information.outputs.account-id }}:role/${{ vars.AWS_DEPLOY_ROLE_NAME }}

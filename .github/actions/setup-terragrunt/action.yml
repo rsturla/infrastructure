@@ -32,6 +32,7 @@ runs:
 
     - name: Configure SSH
       if: ${{ inputs.ssh-private-key != '' }}
+      shell: bash
       run: |
         mkdir -p $HOME/.tmp/ssh
         # Create SSH socket

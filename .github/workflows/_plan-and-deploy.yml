@@ -74,7 +74,12 @@ jobs:
       - name: Plan
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all plan -concise -lock=false
+          terragrunt run-all plan -concise -lock=false -out=tfplan
+
+      - name: Display Plans
+        working-directory: ${{ inputs.account }}
+        run: |
+          terragrunt run-all show tfplan
 
   deploy:
     runs-on: ubuntu-latest

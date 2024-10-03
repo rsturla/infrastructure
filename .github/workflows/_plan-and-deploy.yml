@@ -147,4 +147,4 @@ jobs:
       - name: Apply
         working-directory: ${{ inputs.account }}
         run: |
-          terragrunt run-all apply -auto-approve tfplan.tfplan --terragrunt-out-dir $(pwd)
+          terragrunt run-all apply tfplan.tfplan --terragrunt-out-dir $(pwd)

@@ -57,6 +57,7 @@ Resources:
                   - "servicequotas:*"
                   - "cloudformation:*"
                   - "resource-explorer-2:*"
+                  - "budgets:*"
                 Resource: "*"
               - Sid: "AllowDataStoreAccess"
                 Effect: "Allow"

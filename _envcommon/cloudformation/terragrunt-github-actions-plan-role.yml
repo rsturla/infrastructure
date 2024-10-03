@@ -63,6 +63,7 @@ Resources:
                   - "cloudformation:Describe*"
                   - "resource-explorer-2:Get*"
                   - "resource-explorer-2:List*"
+                  - "budgets:View*"
                 Resource:
                   - "*"
               - Sid: "AllowDataStoreAccess"

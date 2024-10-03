@@ -17,7 +17,7 @@ locals {
 inputs = {
   name        = "terragrunt-plan-role"
   repository  = local.repository
-  git_pattern = "refs/heads/*"
+  git_pattern = "environment:plan"
 
   # TODO: Restrict this to the minimum required permissions - should be able to read infrastructure, not data.
   policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]

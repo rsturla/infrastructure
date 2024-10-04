@@ -18,6 +18,10 @@ locals {
 }
 
 inputs = {
+  organizations_aws_service_access_principals = [
+    "member.org.stacksets.cloudformation.amazonaws.com",
+  ]
+
   child_accounts = {
     for account_name, account_info in local.member_accounts : account_name => {
       email             = account_info.email

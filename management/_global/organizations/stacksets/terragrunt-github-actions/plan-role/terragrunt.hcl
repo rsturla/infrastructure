@@ -1,5 +1,5 @@
 terraform {
-  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/misc/cloudformation-stack?ref=main"
+  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/security/cloudformation-stackset?ref=main"
 }
 
 include "root" {
@@ -7,7 +7,7 @@ include "root" {
 }
 
 dependency "plan_entrypoint_role" {
-  config_path = "${get_terragrunt_dir()}/../plan-entrypoint-role"
+  config_path = "${get_terragrunt_dir()}/../../../../automation/terragrunt-github-actions/plan-entrypoint-role"
 
   mock_outputs = {
     arn = "arn:aws:iam::${local.account_ids["management"]}:role/terragrunt-plan-entrypoint-role"
@@ -19,27 +19,23 @@ locals {
   accounts    = local.common_vars.locals.accounts
   account_ids = local.common_vars.locals.account_ids
 
+  org_units = local.common_vars.locals.org_units
+
   state_region        = local.common_vars.locals.state_region
   state_bucket_suffix = "-${replace(local.state_region, "-", "")}-rsturla"
 }
 
 inputs = {
-  name          = "TerragruntPlanRoleStack"
+  name          = "TerragruntPlanRoleStackSet"
+  description   = "StackSet for Terragrunt GitHub Actions Plan Role"
+
   template_body = file("${find_in_parent_folders("_envcommon")}/cloudformation/terragrunt-github-actions-plan-role.yml")
   capabilities  = ["CAPABILITY_NAMED_IAM"]
 
-  parameters = {
-    ExternalAccountRoleArn          = dependency.apply_entrypoint_role.outputs.arn
-    TerragruntRemoteStateBucketName = "tfstate-*${local.state_bucket_suffix}"
-  }
+  target_org_units = [local.org_units["root"]]
 
-  assume_policy_statements = {
-    Deploy = {
-      effect = "Allow"
-      actions = [
-        "iam:*",
-      ]
-      resources = ["*"]
-    }
+  parameters = {
+    ExternalAccountRoleArn          = dependency.plan_entrypoint_role.outputs.arn
+    TerragruntRemoteStateBucketName = "tfstate-*${local.state_bucket_suffix}"
   }
 }

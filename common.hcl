@@ -29,4 +29,8 @@ locals {
   mgmt_vpc_cidrs    = {}
   app_vpc_cidrs     = {}
   sandbox_vpc_cidrs = {}
+
+  org_units = {
+    root = "r-6hmd"
+  }
 }

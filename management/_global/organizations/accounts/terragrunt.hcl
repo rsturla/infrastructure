@@ -1,5 +1,5 @@
 terraform {
-  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/security/organizations?ref=org-access-to-billing"
+  source = "git::git@github.com:rsturla/terraform-modules.git//modules/aws/security/organizations?ref=main"
 }
 
 # Include the root `terragrunt.hcl` configuration, which has settings common across all environments & components.

@@ -29,7 +29,7 @@ inputs = {
   capabilities  = ["CAPABILITY_NAMED_IAM"]
 
   parameters = {
-    ExternalAccountRoleArn          = dependency.apply_entrypoint_role.outputs.arn
+    ExternalAccountRoleArn          = dependency.plan_entrypoint_role.outputs.arn
     TerragruntRemoteStateBucketName = "tfstate-*${local.state_bucket_suffix}"
   }
 

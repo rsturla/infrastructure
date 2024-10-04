@@ -32,7 +32,7 @@ inputs = {
         "sts:TagSession",
       ]
       resources = [
-        for account in local.accounts : "arn:aws:iam::${local.account_ids[local.account_name]}:role/${local.repository}-terragrunt-apply-role"
+        for account in local.accounts : "arn:aws:iam::${local.account_ids[local.account_name]}:role/terragrunt-apply-role"
       ]
     }
   }

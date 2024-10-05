@@ -35,11 +35,13 @@ jobs:
           account-name: ${{ inputs.account }}
 
       - name: Install Dependencies
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         uses: ./.github/actions/setup-terragrunt
         with:
           ssh-private-key: ${{ secrets.TERRAFORM_MODULES_PRIVATE_KEY }}
 
       - name: Configure AWS Credentials
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -47,6 +49,7 @@ jobs:
           role-session-name: ${{ inputs.account }}-${{ github.run_id }}
 
       - name: Assume Role
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -55,6 +58,7 @@ jobs:
           role-chaining: true
 
       - name: Init
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         working-directory: ${{ inputs.account }}
         run: terragrunt run-all init
 
@@ -67,9 +71,11 @@ jobs:
       #     name: ${{ inputs.account }}-tfplan
 
       - name: Plan
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         working-directory: ${{ inputs.account }}
         run: terragrunt run-all plan -concise -lock=false --terragrunt-no-auto-init --terragrunt-out-dir $(pwd)
 
       - name: Apply
+        if: steps.extract-information.outputs.account-is-setup == 'true'
         working-directory: ${{ inputs.account }}
         run: terragrunt run-all apply --terragrunt-no-auto-init --terragrunt-out-dir $(pwd) --terragrunt-non-interactive

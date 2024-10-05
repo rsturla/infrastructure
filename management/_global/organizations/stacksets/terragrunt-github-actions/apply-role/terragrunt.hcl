@@ -37,5 +37,6 @@ inputs = {
   parameters = {
     ExternalAccountRoleArn          = dependency.apply_entrypoint_role.outputs.arn
     TerragruntRemoteStateBucketName = "tfstate-*${local.state_bucket_suffix}"
+    TerragruntStateLockTableName    = "opentofu-locks"
   }
 }

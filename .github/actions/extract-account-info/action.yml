@@ -31,7 +31,7 @@ outputs:
     value: ${{ steps.extract-information.outputs.account-id }}
   account-is-setup:
     description: 'Whether the account is setup'
-    value: ${{ steps.check-account-setup.outputs.IS_SETUP }}
+    value: ${{ steps.extract-information.outputs.account-is-setup }}
 
 runs:
   using: composite
@@ -61,7 +61,7 @@ runs:
         ACCOUNT_ID=""
         ACCOUNT_IS_SETUP=false
         if [ -n "$ACCOUNT_NAME" ]; then
-          ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" ${{ inputs.accounts-file }})
+          ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" "${{ inputs.accounts-file }}")
 
           if [ -n "$ACCOUNT_ID" ]; then
             ACCOUNT_IS_SETUP=true

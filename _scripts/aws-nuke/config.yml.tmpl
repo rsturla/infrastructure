@@ -1,0 +1,50 @@
+regions:
+- all
+
+accounts:
+  "<account_id>":
+    presets:
+      - defaults
+
+bypass-alias-check-accounts:
+  - "<account_id>"
+
+blocklist:
+- "000000000000"
+
+resource-types:
+  includes:
+    - EC2Subnet
+    - EC2DefaultSecurityGroupRule
+    - EC2DHCPOption
+    - EC2VPC
+    - EC2InternetGateway
+    - EC2InternetGatewayAttachment
+
+presets:
+  defaults:
+    filters:
+      EC2Subnet:
+        - property: DefaultVPC
+          value: "true"
+          invert: true
+      EC2DefaultSecurityGroupRule:
+        - property: DefaultVPC
+          value: "true"
+          invert: true
+      EC2DHCPOption:
+        - property: DefaultVPC
+          value: "true"
+          invert: true
+      EC2VPC:
+        - property: IsDefault
+          value: "true"
+          invert: true
+      EC2InternetGateway:
+        - property: DefaultVPC
+          value: "true"
+          invert: true
+      EC2InternetGatewayAttachment:
+        - property: DefaultVPC
+          value: "true"
+          invert: true

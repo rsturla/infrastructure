@@ -16,6 +16,7 @@ locals {
   account_name = local.account_vars.locals.account_name
 
   repository = local.common_vars.locals.repository
+  org_id     = local.common_vars.locals.org_id
 }
 
 
@@ -32,8 +33,13 @@ inputs = {
         "sts:TagSession",
       ]
       resources = [
-        for account in local.accounts : "arn:aws:iam::${local.account_ids[local.account_name]}:role/terragrunt-apply-role"
+        "arn:aws:iam::*:role/terragrunt-apply-role"
       ]
+      condition = {
+        StringEquals = {
+          "aws:PrincipalOrgID" = local.org_id
+        }
+      }
     }
   }
 }

@@ -59,12 +59,12 @@ runs:
         SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
 
         ACCOUNT_ID=""
-        ACCOUNT_IS_SETUP=true
+        ACCOUNT_IS_SETUP=false
         if [ -n "$ACCOUNT_NAME" ]; then
           ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" ${{ inputs.accounts-file }})
 
-          if [ -z "$ACCOUNT_ID" ]; then
-            ACCOUNT_IS_SETUP=false
+          if [ -n "$ACCOUNT_ID" ]; then
+            ACCOUNT_IS_SETUP=true
           fi
         fi
 

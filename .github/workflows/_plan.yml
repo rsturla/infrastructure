@@ -13,6 +13,9 @@ on:
         required: true
         type: string
 
+env:
+  TERRAGRUNT_NON_INTERACTIVE: true
+
 jobs:
   plan:
     runs-on: ubuntu-latest

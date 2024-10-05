@@ -36,8 +36,10 @@ inputs = {
         "arn:aws:iam::*:role/terragrunt-apply-role"
       ]
       condition = {
-        StringEquals = {
-          "aws:PrincipalOrgID" = local.org_id
+        IsInOrg = {
+          test     = "StringEquals"
+          variable = "aws:PrincipalOrgID"
+          values   = [local.org_id]
         }
       }
     }

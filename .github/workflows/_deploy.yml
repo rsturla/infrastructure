@@ -13,6 +13,9 @@ on:
         required: true
         type: string
 
+env:
+  TERRAGRUNT_NON_INTERACTIVE: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -78,4 +81,4 @@ jobs:
       - name: Apply
         if: steps.extract-information.outputs.account-is-setup == 'true'
         working-directory: ${{ inputs.account }}
-        run: terragrunt run-all apply --terragrunt-no-auto-init --terragrunt-out-dir $(pwd) --terragrunt-non-interactive
+        run: terragrunt run-all apply --terragrunt-no-auto-init --terragrunt-out-dir $(pwd)

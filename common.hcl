@@ -31,6 +31,9 @@ locals {
   sandbox_vpc_cidrs = {}
 
   org_units = {
-    root = "r-6hmd"
+    root       = "r-6hmd"
+    governance = "ou-6hmd-c4ut55g8"
+    sandbox    = "ou-6hmd-68z95dnm"
+    workload   = "ou-6hmd-ubrh8ojk"
   }
 }

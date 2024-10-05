@@ -94,20 +94,20 @@ jobs:
       accounts-file: ./_private/accounts.json
       account: ${{ matrix.account }}
 
-  # deploy-governance:
-  #   uses: ./.github/workflows/_deploy.yml
-  #   if: github.event_name != 'pull_request'
-  #   secrets: inherit
-  #   needs: [prepare, plan, deploy-management]
-  #   permissions:
-  #     id-token: write
-  #     contents: read
-  #   strategy:
-  #     matrix:
-  #       account: ${{ fromJson(needs.prepare.outputs.governance_accounts) }}
-  #   with:
-  #     accounts-file: ./_private/accounts.json
-  #     account: ${{ matrix.account }}
+  deploy-governance:
+    uses: ./.github/workflows/_deploy.yml
+    if: github.event_name != 'pull_request'
+    secrets: inherit
+    needs: [prepare, plan, deploy-management]
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        account: ${{ fromJson(needs.prepare.outputs.governance_accounts) }}
+    with:
+      accounts-file: ./_private/accounts.json
+      account: ${{ matrix.account }}
 
   # deploy-workload:
   #   uses: ./.github/workflows/_deploy.yml

@@ -29,6 +29,9 @@ outputs:
   account-id:
     description: 'The account ID'
     value: ${{ steps.extract-information.outputs.account-id }}
+  account-is-setup:
+    description: 'Whether the account is setup'
+    value: ${{ steps.check-account-setup.outputs.IS_SETUP }}
 
 runs:
   using: composite
@@ -56,8 +59,13 @@ runs:
         SANDBOX_ACCOUNTS=$(jq -cr '.accounts | to_entries | map(select(.value.type == "sandbox")) | sort_by(.value.order // 999) | map(.key) | join(" ")' ${{ inputs.accounts-file }})
 
         ACCOUNT_ID=""
+        ACCOUNT_IS_SETUP=true
         if [ -n "$ACCOUNT_NAME" ]; then
           ACCOUNT_ID=$(jq -r ".accounts[\"$ACCOUNT_NAME\"].id" ${{ inputs.accounts-file }})
+
+          if [ -z "$ACCOUNT_ID" ]; then
+            ACCOUNT_IS_SETUP=false
+          fi
         fi
 
         echo "accounts=$ACCOUNTS" >> $GITHUB_OUTPUT
@@ -66,3 +74,4 @@ runs:
         echo "workload-accounts=$WORKLOAD_ACCOUNTS" >> $GITHUB_OUTPUT
         echo "sandbox-accounts=$SANDBOX_ACCOUNTS" >> $GITHUB_OUTPUT
         echo "account-id=$ACCOUNT_ID" >> $GITHUB_OUTPUT
+        echo "account-is-setup=$ACCOUNT_IS_SETUP" >> $GITHUB_OUTPUT

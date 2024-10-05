@@ -11,7 +11,7 @@ Parameters:
   TerragruntStateLockTableName:
     Description: "The name of the DynamoDB table where the Terragrunt state lock is stored."
     Type: String
-    Default: "terraform-locks"
+    Default: "opentofu-locks"
 
 Resources:
   TerragruntPlanRole:

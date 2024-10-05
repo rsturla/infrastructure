@@ -30,7 +30,11 @@ locals {
   app_vpc_cidrs     = {}
   sandbox_vpc_cidrs = {}
 
+  org_id = "o-8h0fvztaki"
   org_units = {
-    root = "r-6hmd"
+    root       = "r-6hmd"
+    governance = "ou-6hmd-c4ut55g8"
+    sandbox    = "ou-6hmd-68z95dnm"
+    workload   = "ou-6hmd-ubrh8ojk"
   }
 }

@@ -10,6 +10,7 @@ include "root" {
 locals {
   common_vars = read_terragrunt_config(find_in_parent_folders("common.hcl"))
   accounts    = local.common_vars.locals.accounts
+  account_ids = local.common_vars.locals.account_ids
 
   org_units = local.common_vars.locals.org_units
 
@@ -22,6 +23,7 @@ locals {
 inputs = {
   organizations_aws_service_access_principals = [
     "member.org.stacksets.cloudformation.amazonaws.com",
+    "sso.amazonaws.com",
   ]
 
   child_accounts = {

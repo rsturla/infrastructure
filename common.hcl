@@ -5,7 +5,7 @@ locals {
   accounts = jsondecode(file("_private/accounts.json")).accounts
   account_ids = {
     for key, account_info in local.accounts : key => account_info.id
-    if account_info.id != null
+    if account_info.id != null && account_info.id != ""
   }
 
   management_account = {

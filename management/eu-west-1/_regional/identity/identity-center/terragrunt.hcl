@@ -11,11 +11,6 @@ locals {
   common_vars = read_terragrunt_config(find_in_parent_folders("common.hcl"))
   accounts    = local.common_vars.locals.accounts
   account_ids = local.common_vars.locals.account_ids
-
-  account_ids_except_management = {
-    for account_name, account_id in local.account_ids : account_name => account_id
-    if local.accounts[account_name].type != "management"
-  }
 }
 
 inputs = {

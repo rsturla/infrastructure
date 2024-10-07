@@ -22,7 +22,8 @@ jobs:
       - name: Check Formatting
         working-directory: ${{ steps.extract-information.outputs.account }}
         run: |
-          terragrunt hclfmt --teragrunt-check
+          terragrunt hclfmt
+          git diff --exit-code
 
   prepare:
     runs-on: ubuntu-latest

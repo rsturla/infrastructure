@@ -26,8 +26,8 @@ locals {
 }
 
 inputs = {
-  name          = "TerragruntApplyRoleStackSet"
-  description   = "StackSet for Terragrunt GitHub Actions Apply Role"
+  name        = "TerragruntApplyRoleStackSet"
+  description = "StackSet for Terragrunt GitHub Actions Apply Role"
 
   template_body = file("${find_in_parent_folders("_envcommon")}/cloudformation/terragrunt-github-actions-apply-role.yml")
   capabilities  = ["CAPABILITY_NAMED_IAM"]

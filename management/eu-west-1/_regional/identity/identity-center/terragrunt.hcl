@@ -21,15 +21,15 @@ inputs = {
 
   permission_sets = {
     AWSAdministratorAccess = {
-      description = "Administrator access to all child accounts in the AWS organization"
-      session_duration = "PT1H"
-      aws_managed_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+      description               = "Administrator access to all child accounts in the AWS organization"
+      session_duration          = "PT1H"
+      aws_managed_policies      = ["arn:aws:iam::aws:policy/AdministratorAccess"]
       customer_managed_policies = []
     }
     AWSReadOnlyAccess = {
-      description = "Read-only access to all child accounts in the AWS organization"
-      session_duration = "PT3H"
-      aws_managed_policies = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
+      description               = "Read-only access to all child accounts in the AWS organization"
+      session_duration          = "PT3H"
+      aws_managed_policies      = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
       customer_managed_policies = []
     }
   }

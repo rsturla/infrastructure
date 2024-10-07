@@ -3,9 +3,10 @@ locals {
   state_region   = "eu-west-1"
 
   accounts = jsondecode(file("_private/accounts.json")).accounts
-  account_ids = compact({
+  account_ids = {
     for key, account_info in local.accounts : key => account_info.id
-  })
+    if account_info.id != null
+  }
 
   management_account = {
     for name, account_info in local.accounts : name => account_info

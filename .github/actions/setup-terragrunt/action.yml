@@ -4,11 +4,11 @@ inputs:
   terragrunt-version:
     description: 'The version of Terragrunt to install'
     required: true
-    default: '0.67.9'
+    default: '0.68.0'
   opentofu-version:
     description: 'The version of OpenTofu to install'
     required: true
-    default: '1.8.2'
+    default: '1.8.3'
   ssh-private-key:
     description: 'The SSH private key to use for fetching Terragrunt modules'
     required: false

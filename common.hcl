@@ -27,6 +27,9 @@ locals {
 
   repository = "rsturla/infrastructure"
 
+  org_cloudtrail_arn    = "arn:aws:cloudtrail:eu-west-1:${local.account_ids["management"]}:trail/org-trail"
+  org_cloudtrail_bucket = "cloudtrail-logarchive-euwest1-rsturla"
+
   mgmt_vpc_cidrs    = {}
   app_vpc_cidrs     = {}
   sandbox_vpc_cidrs = {}

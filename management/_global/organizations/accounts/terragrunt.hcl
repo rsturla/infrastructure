@@ -24,6 +24,7 @@ inputs = {
   organizations_aws_service_access_principals = [
     "member.org.stacksets.cloudformation.amazonaws.com",
     "sso.amazonaws.com",
+    "cloudtrail.amazonaws.com",
   ]
 
   child_accounts = {

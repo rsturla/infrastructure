@@ -1,5 +1,7 @@
 # Infrastructure
 
+The repository housing all foundational AWS resources across my personal environment.
+
 ## Account Layout
 
 **Management**

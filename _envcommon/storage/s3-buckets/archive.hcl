@@ -8,5 +8,5 @@ locals {
 }
 
 inputs = {
-  name = "archive-${local.bucket_suffix}"
+  name = "archive${local.bucket_suffix}"
 }

@@ -4,7 +4,7 @@ inputs:
   terragrunt-version:
     description: 'The version of Terragrunt to install'
     required: true
-    default: '0.67.9'
+    default: '0.71.1'
   opentofu-version:
     description: 'The version of OpenTofu to install'
     required: true

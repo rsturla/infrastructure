@@ -45,7 +45,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.extract-information.outputs.account-is-setup == 'true'
-        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_PLAN_ENTRYPOINT_ROLE_ARN }}
@@ -53,7 +53,7 @@ jobs:
 
       - name: Assume Role
         if: steps.extract-information.outputs.account-is-setup == 'true'
-        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ steps.extract-information.outputs.account-id }}:role/${{ vars.AWS_PLAN_ROLE_NAME }}
